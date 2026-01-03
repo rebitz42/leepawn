@@ -1,40 +1,46 @@
 /*! chessboard.js v1.0.0 | (c) 2019 Chris Oakman | MIT License chessboardjs.com/license */
-
 .clearfix-7da63 {
   clear: both;
 }
 
 .board-b72b1 {
-  border: 2px solid #222c3c; /* dark border to match style */
+  border: 2px solid #5d4037;
+  /* dark brown border for wood frame */
   box-sizing: content-box;
-  background: #181f2a; /* dark background */
+  background: #3e2723;
+  /* deep walnut background */
 }
 
 .square-55d63 {
   float: left;
   position: relative;
-
   /* disable any native browser highlighting */
   -webkit-touch-callout: none;
-    -webkit-user-select: none;
-     -khtml-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .white-1e1d7 {
-  background-color: #f5f7fa; /* light square: near white */
-  color: #455f85; /* text: dark blue */
+  background-color: #f0d9b5;
+  /* light maple wood */
+  color: #5d4037;
+  /* dark brown text */
 }
 
 .black-3c85d {
-  background-color: #455f85; /* dark square: deep blue */
-  color: #f5f7fa; /* text: light */
+  background-color: #b58863;
+  /* dark walnut wood */
+  color: #f0d9b5;
+  /* light text */
 }
 
-.highlight1-32417, .highlight2-9c5d2 {
-  box-shadow: inset 0 0 6px 4px #4fc3f7; /* blue accent highlight */
+.highlight1-32417,
+.highlight2-9c5d2 {
+  box-shadow: inset 0 0 8px 6px #3e2723;
+  /* bright golden highlight */
 }
 
 .notation-322f9 {
@@ -42,7 +48,8 @@
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   position: absolute;
-  color: #4fc3f7; /* blue accent for notation */
+  color: #8b6f47;
+  /* medium wood tone for notation */
 }
 
 .alpha-d2270 {
