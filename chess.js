@@ -1,3 +1,7 @@
+/////////////////////////////////////////////////////////////////////
+// Chess Game Logic and Board Interaction
+////////////////////////////////////////////////////////////////////
+
 let board, game;
 const resetBtn = document.getElementById("reset");
 let msg = document.getElementById("msg");
@@ -43,6 +47,7 @@ function onDrop(source, target) {
   if (move === null) return "snapback";
   removeRedSquare();
   updateStatus();
+  setTimeout(makeMinMaxMove, 250);
 }
 
 function onSnapEnd() {
@@ -145,4 +150,93 @@ function getKeyByValue(object, value) {
     }
   }
   return null;
+}
+
+/////////////////////////////////////////////////////////////////////
+// Evaluation Function for AI
+////////////////////////////////////////////////////////////////////
+
+let pieceValues = {
+  p: 10,
+  n: 30,
+  b: 30,
+  r: 50,
+  q: 90,
+  k: 900,
+};
+
+function evaluateBoard(board) {
+  let evaluation = 0;
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      evaluation += getPieceValue(board[i][j]);
+    }
+  }
+  return evaluation;
+}
+
+function getPieceValue(piece) {
+  if (piece === null) return 0;
+
+  if (piece.color === "w") {
+    return pieceValues[piece.type];
+  } else {
+    return -pieceValues[piece.type];
+  }
+}
+
+function evaluatePosition(position) {
+  if (position.in_checkmate()) {
+    return position.turn() == "w" ? -checkmate_eval : checkmate_eval;
+  } else if (position.in_draw()) {
+    return 0;
+  } else {
+    return evaluateBoard(position.board());
+  }
+}
+/////////////////////////////////////////////////////////////////////
+// Chess AI algorithms (e.g., Minimax, Alpha-Beta Pruning)
+////////////////////////////////////////////////////////////////////
+
+function minimax(position, depth, maximizingPlayer) {
+  if (position.in_checkmate() || position.in_draw() || depth == 0) {
+    return [null, evaluatePosition(position)];
+  }
+  let bestMove;
+  if (maximizingPlayer) {
+    let maxEval = -Infinity;
+    let possibleMoves = position.moves();
+    for (let i = 0; i < possibleMoves.length; i++) {
+      position.move(possibleMoves[i]);
+      let [childBestMove, childEval] = minimax(position, depth - 1, false);
+      if (childEval > maxEval) {
+        maxEval = childEval;
+        bestMove = possibleMoves[i];
+      }
+      position.undo();
+    }
+    return [bestMove, maxEval];
+  } else {
+    let minEval = +Infinity;
+    let possibleMoves = position.moves();
+    for (let i = 0; i < possibleMoves.length; i++) {
+      position.move(possibleMoves[i]);
+      let [childBestMove, childEval] = minimax(position, depth - 1, true);
+      if (childEval < minEval) {
+        minEval = childEval;
+        bestMove = possibleMoves[i];
+      }
+      position.undo();
+    }
+    return [bestMove, minEval];
+  }
+}
+
+function makeMinMaxMove() {
+  let maximizing = game.turn() == "w";
+  let [bestMove, bestEval] = minimax(game, 3, maximizing);
+  game.move(bestMove);
+  board.position(game.fen());
+  removeRedSquare();
+  updateStatus();
 }
