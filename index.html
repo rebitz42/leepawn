@@ -16,7 +16,16 @@
     </header>
     <div id="board" class="board" style="width: 400px"></div>
     <div id="msg"></div>
-    <button id="reset">Reset</button>
+    <div id="controls">
+      <button id="reset" class="controls-btn btn-style">Reset</button>
+      <button id="undo" class="controls-btn btn-style">Undo</button>
+      <button id="flip" class="controls-btn btn-style">Flip Board</button>
+      <div class="depth-group btn-style"">
+        <button id="depth-decrease" class="controls-btn depth-btn">-</button>
+        <span id="depth-value" class="controls-btn depth-value">3</span>
+        <button id="depth-increase" class="controls-btn depth-btn">+</button>
+      </div>
+    </div>
     <script src="chess.js"></script>
   </body>
 </html>

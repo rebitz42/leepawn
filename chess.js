@@ -3,7 +3,38 @@
 ////////////////////////////////////////////////////////////////////
 
 let board, game;
+let humanIsWhite = true;
 const resetBtn = document.getElementById("reset");
+const undoBtn = document.getElementById("undo");
+const flipBtn = document.getElementById("flip");
+let depthValue = 3;
+const minDepth = 1;
+const maxDepth = 5;
+
+const depthValueSpan = document.getElementById("depth-value");
+const depthDecreaseBtn = document.getElementById("depth-decrease");
+const depthIncreaseBtn = document.getElementById("depth-increase");
+
+function updateDepthDisplay() {
+  if (depthValueSpan) depthValueSpan.textContent = depthValue;
+}
+
+if (depthDecreaseBtn && depthIncreaseBtn && depthValueSpan) {
+  depthDecreaseBtn.addEventListener("click", function () {
+    if (depthValue > minDepth) {
+      depthValue--;
+      updateDepthDisplay();
+    }
+  });
+  depthIncreaseBtn.addEventListener("click", function () {
+    if (depthValue < maxDepth) {
+      depthValue++;
+      updateDepthDisplay();
+    }
+  });
+  updateDepthDisplay();
+}
+
 let msg = document.getElementById("msg");
 
 pst = {
@@ -80,21 +111,43 @@ window.onload = function () {
   board = Chessboard("board", config);
 
   resetBtn.addEventListener("click", function () {
-    board.start(false);
+    resetGame();
+  });
+  undoBtn.addEventListener("click", function () {
+    game.undo();
+    game.undo();
+    board.position(game.fen());
     removeRedSquare();
+    updateStatus();
     msg.textContent = "";
-    game.reset();
+    // If human is black and it's white's turn, let AI move again
+    if (!humanIsWhite && game.turn() === "w") {
+      setTimeout(makeMinMaxMove, 250);
+    }
+  }); 
+  flipBtn.addEventListener("click", function () {
+    board.flip();
+    resetGame();
+    
+    humanIsWhite = !humanIsWhite;
+    // If after flipping, it's not the human's turn, make the AI move
+    if ((game.turn() === "w" && !humanIsWhite) || (game.turn() === "b" && humanIsWhite)) {
+      setTimeout(makeMinMaxMove, 250);
+    }
   });
 };
 
 function onDrop(source, target) {
   removeGreySquare();
+  // Only allow move if it's the human's turn
+  if ((game.turn() === "w" && !humanIsWhite) || (game.turn() === "b" && humanIsWhite)) {
+    return "snapback";
+  }
   let move = game.move({
     from: source,
     to: target,
     promotion: "q",
   });
-
   if (move === null) return "snapback";
   removeRedSquare();
   updateStatus();
@@ -107,11 +160,11 @@ function onSnapEnd() {
 
 function onDragStart(source, piece) {
   if (game.game_over()) return false;
-
-  if (
-    (game.turn() == "w" && piece.search(/^b/) !== -1) ||
-    (game.turn() == "b" && piece.search(/^w/) !== -1)
-  ) {
+  // Only allow drag if it's the human's turn and correct color
+  if ((game.turn() === "w" && !humanIsWhite) || (game.turn() === "b" && humanIsWhite)) {
+    return false;
+  }
+  if ((game.turn() === "w" && piece.search(/^b/) !== -1) || (game.turn() === "b" && piece.search(/^w/) !== -1)) {
     return false;
   }
 }
@@ -201,6 +254,17 @@ function getKeyByValue(object, value) {
     }
   }
   return null;
+}
+
+function resetGame() {
+  board.start(false);
+  removeRedSquare();
+  msg.textContent = "";
+  game.reset();
+  // If human is black, let AI move first
+  if (!humanIsWhite) {
+    setTimeout(makeMinMaxMove, 250);
+  }
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -316,8 +380,13 @@ function minimax(position, depth, alpha, beta, maximizingPlayer) {
 }
 
 function makeMinMaxMove() {
+  // Only let AI move if it's not the human's turn
+  if ((game.turn() === "w" && humanIsWhite) || (game.turn() === "b" && !humanIsWhite)) {
+    return;
+  }
   let maximizing = game.turn() == "w";
-  let [bestMove, bestEval] = minimax(game, 3, -Infinity, +Infinity, maximizing);
+  let depth = depthValue;
+  let [bestMove, bestEval] = minimax(game, depth, -Infinity, +Infinity, maximizing);
   game.move(bestMove);
   board.position(game.fen());
   removeRedSquare();
