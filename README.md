@@ -1,4 +1,4 @@
-# LeePawn
+# LeePawn ♟️
 
 A simple JavaScript chess AI built for fun, learning, and tinkering.
 
