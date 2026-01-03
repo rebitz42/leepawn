@@ -1,3 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 32px;
+    color: #333;
+}
+
+#reset {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
 .red-square {
     box-shadow: inset 0 0 3px 3px red ;
 }
