@@ -10,10 +10,10 @@
   - [`chess.js`](https://github.com/jhlywa/chess.js) for game logic.
   - [`chessboard.js`](https://github.com/oakmac/chessboardjs) for board rendering.
 
-## License
-
-MIT License
-
 ## Credit
 
 Heavily inspired by this excellent [blog post](https://rmgeddert.github.io/simple-chess-ai-part1/).
+
+## License
+
+MIT License
