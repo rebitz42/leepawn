@@ -155,6 +155,8 @@ function getKeyByValue(object, value) {
 /////////////////////////////////////////////////////////////////////
 // Evaluation Function for AI
 ////////////////////////////////////////////////////////////////////
+// Add at the top with pieceValues
+const checkmate_eval = 10000;
 
 let pieceValues = {
   p: 10,
@@ -198,35 +200,55 @@ function evaluatePosition(position) {
 // Chess AI algorithms (e.g., Minimax, Alpha-Beta Pruning)
 ////////////////////////////////////////////////////////////////////
 
-function minimax(position, depth, maximizingPlayer) {
+function minimax(position, depth, alpha, beta, maximizingPlayer) {
   if (position.in_checkmate() || position.in_draw() || depth == 0) {
     return [null, evaluatePosition(position)];
   }
   let bestMove;
   if (maximizingPlayer) {
     let maxEval = -Infinity;
-    let possibleMoves = position.moves();
+    let possibleMoves = shuffle(position.moves());
     for (let i = 0; i < possibleMoves.length; i++) {
       position.move(possibleMoves[i]);
-      let [childBestMove, childEval] = minimax(position, depth - 1, false);
+      let [childBestMove, childEval] = minimax(
+        position,
+        depth - 1,
+        alpha,
+        beta,
+        false
+      );
       if (childEval > maxEval) {
         maxEval = childEval;
         bestMove = possibleMoves[i];
       }
       position.undo();
+      alpha = Math.max(alpha, childEval);
+      if (beta <= alpha) {
+        break;
+      }
     }
     return [bestMove, maxEval];
   } else {
     let minEval = +Infinity;
-    let possibleMoves = position.moves();
+    let possibleMoves = shuffle(position.moves());
     for (let i = 0; i < possibleMoves.length; i++) {
       position.move(possibleMoves[i]);
-      let [childBestMove, childEval] = minimax(position, depth - 1, true);
+      let [childBestMove, childEval] = minimax(
+        position,
+        depth - 1,
+        alpha,
+        beta,
+        true
+      );
       if (childEval < minEval) {
         minEval = childEval;
         bestMove = possibleMoves[i];
       }
       position.undo();
+      beta = Math.min(beta, childEval);
+      if (beta <= alpha) {
+        break;
+      }
     }
     return [bestMove, minEval];
   }
@@ -234,9 +256,22 @@ function minimax(position, depth, maximizingPlayer) {
 
 function makeMinMaxMove() {
   let maximizing = game.turn() == "w";
-  let [bestMove, bestEval] = minimax(game, 3, maximizing);
+  let [bestMove, bestEval] = minimax(game, 3, -Infinity, +Infinity, maximizing);
   game.move(bestMove);
   board.position(game.fen());
   removeRedSquare();
   updateStatus();
+}
+
+// Fisher-Yates shuffle
+function shuffle(array) {
+  for (
+    let j, x, i = array.length;
+    i;
+    j = Math.floor(Math.random() * i),
+      x = array[--i],
+      array[i] = array[j],
+      array[j] = x
+  );
+  return array;
 }
