@@ -3,16 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LeePawn ♟️</title>
+    <title>LeePawn</title>
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon" />
     <link rel="stylesheet" href="style.css" />
     <script src="lib/jquery/jquery-3.7.1.min.js"></script>
-    <link rel="stylesheet" href="lib/chessboard/css/chessboard-1.0.0.min.css" />
+    <link rel="stylesheet" href="lib/chessboard/css/chessboard-1.0.0.css" />
     <script src="lib/chessboard/js/chessboard-1.0.0.min.js"></script>
     <script src="lib/chess/chess.min.js"></script>
   </head>
   <body>
-    <h1>LeePawn ♟️</h1>
-    <div id="board" style="width: 400px"></div>
+    <header>
+      <img src="icon.png" alt="LeePawn Logo" id="logo" />
+      <h1>LeePawn</h1>
+    </header>
+    <div id="board" class="board" style="width: 400px"></div>
     <div id="msg"></div>
     <button id="reset">Reset</button>
     <script src="chess.js"></script>
