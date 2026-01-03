@@ -1,6 +1,6 @@
 # LeePawn
 
-**LeePawn** is a small JavaScript chess AI built for fun, learning, and tinkering. It’s designed to be simple, readable, and easy to use.
+**LeePawn** is a small JavaScript chess AI built for fun, learning, and tinkering.
 
 ## Features
 
